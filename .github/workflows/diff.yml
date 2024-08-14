@@ -27,7 +27,7 @@ jobs:
       uses: actions/checkout@v4
       with:
         ref: ${{ env.PROD_ARCHIVESSPACE_VERSION }}
-        repository: lorawoodford/archivesspace
+        repository: Smithsonian/archivesspace
         path: archivesspace-baseline
         sparse-checkout: |
           frontend/app/views
@@ -36,7 +36,7 @@ jobs:
       uses: actions/checkout@v4
       with:
         ref: ${{ matrix.archivesspace_version }}
-        repository: lorawoodford/archivesspace
+        repository: Smithsonian/archivesspace
         path: archivesspace
         sparse-checkout: |
           frontend/app/views
