@@ -1,0 +1,72 @@
+name: diff
+description: 'Run diff checks'
+inputs:
+  archivesspace_version:
+    description: 'Production version of ArchivesSpace'
+    required: true
+    default: v3.3.1
+  test_version:
+    description: 'Test version of ArchivesSpace'
+    required: true
+    default: v3.3.1
+outputs:
+  matching:
+    description: "Diffs match"
+    value: ${{ steps.matching.outputs }}
+  not_matching:
+    description: "Diffs match"
+    value: ${{ steps.not_matching.outputs }}
+runs:
+  using: "composite"
+  steps:
+  - name: Checkout current plugin
+    uses: actions/checkout@v4
+    with:
+      path: plugin
+      sparse-checkout: |
+        frontend/views
+
+  - name: Checkout ArchivesSpace baseline repo
+    uses: actions/checkout@v4
+    with:
+      ref: ${{ env.PROD_ARCHIVESSPACE_VERSION }}
+      repository: Smithsonian/archivesspace
+      path: archivesspace-baseline
+      sparse-checkout: |
+        frontend/app/views
+
+  - name: Checkout ArchivesSpace repo
+    uses: actions/checkout@v4
+    with:
+      ref: ${{ matrix.archivesspace_version }}
+      repository: Smithsonian/archivesspace
+      path: archivesspace
+      sparse-checkout: |
+        frontend/app/views
+
+  - name: Diff with baseline
+    id: baseline
+    run: |
+      echo "baseline_changes=$(git diff --diff-filter=M --shortstat ${{ github.workspace }}/archivesspace-baseline/frontend/app/views ${{ github.workspace }}/plugin/frontend/views)" > $GITHUB_OUTPUT
+  
+  - name: Diff with new versions
+    id: new
+    run: |
+      echo "new_changes=$(git diff --diff-filter=M --shortstat ${{ github.workspace }}/archivesspace/frontend/app/views ${{ github.workspace }}/plugin/frontend/views)" > $GITHUB_OUTPUT
+
+  - name: Diffs match
+    id: matching
+    if: ${{ steps.baseline.outputs.baseline_changes == steps.new.outputs.new_changes }}
+    run: |
+      echo "${{ steps.baseline.outputs.baseline_changes }}"
+      echo "${{ steps.new.outputs.new_changes }}"
+      echo "${{ steps.new.outputs.new_changes2 }}"
+      echo "All views overridden by this plugin match $PROD_ARCHIVESSPACE_VERSION of ArchivesSpace"
+
+  - name: Diffs do not match
+    id: not_matching
+    if: ${{ steps.baseline.outputs.baseline_changes != steps.new.outputs.new_changes }}
+    run: |
+      echo "Some views overridden by this plugin do not match those in ArchivesSpace ${{ matrix.archivesspace_version }}.  See:"
+      echo "::set-output name=review_changes::$(git diff --diff-filter=M -w --color -- ${{ github.workspace }}/archivesspace/frontend/app/views ${{ github.workspace }}/plugin/frontend/views)"
+      exit 1
