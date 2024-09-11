@@ -4,12 +4,31 @@ on:
   pull_request:
     branches:
       - main
-    paths:
-      - 'frontend/views/**'
+  push:
 
 jobs:
+  paths-filter:
+    runs-on: ubuntu-latest
+    outputs:
+      output1: ${{ steps.changed-views.outputs.views }}
+    steps:
+    - uses: actions/checkout@v4
+    - uses: dorny/paths-filter@v3
+      id: changed-views
+      with:
+        filters: |
+          views:
+            - 'frontend/views/**'
+    # run only if 'workflows' files were changed
+    - name: run diff
+      if: steps.changed-views.outputs.views == 'true'
+      run: echo "Workflow file"
+
   diff:
     runs-on: ubuntu-latest
+    # Wait from the paths-filter to be completed before starting next-job
+    needs: paths-filter
+    if: needs.paths-filter.outputs.output1 == 'true'
     env:
       PROD_ARCHIVESSPACE_VERSION: v3.3.1
     continue-on-error: true
