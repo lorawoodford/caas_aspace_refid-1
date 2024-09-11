@@ -33,7 +33,7 @@ jobs:
       matrix:
         archivesspace_version: [v3.3.1, v3.4.1, v3.5.1]
     steps:
-      uses: actions/checkout@v4
+      - uses: actions/checkout@v4
       - if: needs.paths-filter.outputs.output1 == 'true'
         uses: './.github/actions/action.yml'
         with:
