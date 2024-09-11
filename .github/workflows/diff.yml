@@ -19,10 +19,9 @@ jobs:
         filters: |
           views:
             - 'frontend/views/**'
-    # run only if 'workflows' files were changed
     - name: run diff
       if: steps.changed-views.outputs.views == 'true'
-      run: echo "Workflow file"
+      run: echo "Views changed"
 
   diff:
     runs-on: ubuntu-latest
@@ -37,8 +36,10 @@ jobs:
     steps:
     - name: Skip if unchanged
       if: needs.paths-filter.outputs.output1 != 'true'
-      run: |
-        exit 0
+      uses: actions/checkout@v4
+      with:
+        ref: ${{ matrix.archivesspace_version }}
+    - run: echo "OK"
 
     - name: Checkout current plugin
       uses: actions/checkout@v4
