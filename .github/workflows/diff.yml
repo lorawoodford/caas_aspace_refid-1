@@ -34,8 +34,11 @@ jobs:
       matrix:
         archivesspace_version: [v3.3.1, v3.4.1, v3.5.1]
     steps:
-      - id: diff
+      - if: needs.paths-filter.outputs.output1 == 'true'
         uses: './.github/actions/action.yml'
         with:
           archivesspace_version: ${{ env.PROD_ARCHIVESSPACE_VERSION }}
           test_version: ${{ matrix.archivesspace_version }}
+      - if: needs.paths-filter.outputs.output1 != 'true'
+        run: |
+          echo "OK"
