@@ -45,7 +45,7 @@ runs:
     id: baseline
     shell: bash
     run: |
-      echo "baseline_changes=$(git diff --diff-filter=M --shortstat ${{ github.workspace }}/archivesspace-baseline/frontend/app/views ${{ github.workspace }}/plugin/frontend/views)" > $GITHUB_OUTPUT
+      echo "baseline_changes=$(git diff --diff-filter=M --shortstat $GITHUB_ACTION_PATH/archivesspace-baseline/frontend/app/views $GITHUB_ACTION_PATH/plugin/frontend/views)" > $GITHUB_OUTPUT
   
   - name: Diff with new versions
     id: new
