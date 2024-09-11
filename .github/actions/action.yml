@@ -13,6 +13,8 @@ runs:
   using: "composite"
   steps:
   - name: Checkout ArchivesSpace baseline repo
+    env:
+      PROD_ARCHIVESSPACE_VERSION: ${{ inputs.archivesspace_version }}
     uses: actions/checkout@v4
     with:
       ref: ${{ env.PROD_ARCHIVESSPACE_VERSION }}
@@ -22,9 +24,12 @@ runs:
         frontend/app/views
 
   - name: Checkout ArchivesSpace repo
+    env:
+      PROD_ARCHIVESSPACE_VERSION: ${{ inputs.archivesspace_version }}
+      TEST_VERSION: ${{ inputs.TEST_VERSION }}
     uses: actions/checkout@v4
     with:
-      ref: ${{ matrix.archivesspace_version }}
+      ref: ${{ env.PROD_ARCHIVESSPACE_VERSION }}
       repository: Smithsonian/archivesspace
       path: archivesspace
       sparse-checkout: |
