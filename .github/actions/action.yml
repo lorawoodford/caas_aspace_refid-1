@@ -19,6 +19,10 @@ outputs:
 runs:
   using: "composite"
   steps:
+  - name: Set GitHub Path
+    run: echo "$GITHUB_ACTION_PATH" >> $GITHUB_PATH
+    env:
+      GITHUB_ACTION_PATH: ${{ github.action_path }}
   - name: Checkout current plugin
     uses: actions/checkout@v4
     with:
