@@ -44,19 +44,16 @@ runs:
 
   - name: Diff with baseline
     id: baseline
-    shell: bash
     run: |
       echo "baseline_changes=$(git diff --diff-filter=M --shortstat ${{ github.workspace }}/archivesspace-baseline/frontend/app/views ${{ github.workspace }}/plugin/frontend/views)" > $GITHUB_OUTPUT
   
   - name: Diff with new versions
     id: new
-    shell: bash
     run: |
       echo "new_changes=$(git diff --diff-filter=M --shortstat ${{ github.workspace }}/archivesspace/frontend/app/views ${{ github.workspace }}/plugin/frontend/views)" > $GITHUB_OUTPUT
 
   - name: Diffs match
     id: matching
-    shell: bash
     if: ${{ steps.baseline.outputs.baseline_changes == steps.new.outputs.new_changes }}
     run: |
       echo "${{ steps.baseline.outputs.baseline_changes }}"
