@@ -28,7 +28,6 @@ jobs:
     runs-on: ubuntu-latest
     # Wait from the paths-filter to be completed before starting next-job
     needs: paths-filter
-    if: needs.paths-filter.outputs.output1 == 'true'
     env:
       PROD_ARCHIVESSPACE_VERSION: v3.3.1
     continue-on-error: true
@@ -36,6 +35,10 @@ jobs:
       matrix:
         archivesspace_version: [v3.3.1, v3.4.1, v3.5.1]
     steps:
+    - name: Skip if unchanged
+      if: needs.paths-filter.outputs.output1 != 'true'
+      run: |
+        exit 0
 
     - name: Checkout current plugin
       uses: actions/checkout@v4
