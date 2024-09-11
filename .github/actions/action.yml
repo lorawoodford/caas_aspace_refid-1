@@ -9,13 +9,6 @@ inputs:
     description: 'Test version of ArchivesSpace'
     required: true
     default: v3.3.1
-outputs:
-  matching:
-    description: "Diffs match"
-    value: ${{ steps.matching.outputs }}
-  not_matching:
-    description: "Diffs match"
-    value: ${{ steps.not_matching.outputs }}
 runs:
   using: "composite"
   steps:
