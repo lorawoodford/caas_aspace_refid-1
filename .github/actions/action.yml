@@ -12,11 +12,12 @@ inputs:
 runs:
   using: "composite"
   steps:
-  - name: Set GitHub Path
-    run: echo "$GITHUB_ACTION_PATH" >> $GITHUB_PATH
-    shell: bash
-    env:
-      GITHUB_ACTION_PATH: ${{ github.action_path }}
+  - name: Checkout current plugin
+    uses: actions/checkout@v4
+    with:
+      path: plugin
+      sparse-checkout: |
+        frontend/views
 
   - name: Checkout ArchivesSpace baseline repo
     env:
@@ -45,7 +46,7 @@ runs:
     id: baseline
     shell: bash
     run: |
-      echo "baseline_changes=$(git diff --diff-filter=M --shortstat $GITHUB_ACTION_PATH/archivesspace-baseline/frontend/app/views $GITHUB_ACTION_PATH/plugin/frontend/views)" > $GITHUB_OUTPUT
+      echo "baseline_changes=$(git diff --diff-filter=M --shortstat ${{ github.workspace }}/archivesspace-baseline/frontend/app/views ${{ github.workspace }}/plugin/frontend/views)" > $GITHUB_OUTPUT
   
   - name: Diff with new versions
     id: new
