@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
   title: CAAS ASpace Refid Plugin API
-  version: 0.1
+  version: '0.1'
 
 servers:
   - url: http://aspace.si.edu:8089
@@ -91,12 +91,9 @@ components:
           type: integer
           format: int64
           example: 198772
-      json:
-        name: caas_next_refid
       type: object
   securitySchemes:
     caas_aspace_refid_auth:
-      flows:
-        implicit:
-          scopes:
-            'administer_system': The ability to act as a system administrator
+      type: http
+      scheme: basic
+      x-ArchivesSpace-permissions: 'administer_system'
