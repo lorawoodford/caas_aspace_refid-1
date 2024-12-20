@@ -1,0 +1,99 @@
+openapi: 3.0.0
+info:
+  title: CAAS ASpace Refid Plugin API
+  version: 0.1
+
+servers:
+  - url: http://aspace.si.edu:8089
+    description: Main (production) ArchivesSpace server
+  - url: http://aspacetest.si.edu:8089
+    description: Internal ArchivesSpace staging server for testing
+
+paths:
+  /plugins/caas_next_refid:
+    post:
+      summary: Mint the next ref_id for provided resource
+      description: _Note_ This is the endpoint hit by the Staff UI
+      parameters:
+        - name: resource_id
+          in: query
+          description: The ID of the current resource
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200": # status code
+          description: A JSON response object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CaasNextRefid'
+  /plugins/caas_next_refid/:resource_id:
+    get:
+      summary: Get next ref_id for provided resource
+      description: This endpoint is hit by the Staff UI
+      parameters:
+        - name: resource_id
+          in: path
+          description: The ID of the requested resource
+          required: true
+          schema:
+            type: integer
+      security:
+        - caas_aspace_refid_auth:
+            - 'administer_system'
+      responses:
+        "200": # status code
+          description: A JSON response object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CaasNextRefid'
+  /plugins/caas_next_refid/:resource_id:
+    post:
+      summary: Manually set next ref_id for provided resource
+      parameters:
+        - name: resource_id
+          in: path
+          description: The ID of the requested resource
+          required: true
+          schema:
+            type: integer
+        - name: next_refid
+          in: query
+          description: The ID of the user-supplied next_refid.  Must be greater than the current next_refid.
+          required: true
+          schema:
+            type: integer
+      security:
+        - caas_aspace_refid_auth:
+            - 'administer_system'
+      responses:
+        "200": # status code
+          description: A JSON response object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CaasNextRefid'
+
+components:
+  schemas:
+    CaasNextRefid:
+      properties:
+        resource_id:
+          type: integer
+          format: int64
+          example: 10
+        next_refid:
+          type: integer
+          format: int64
+          example: 198772
+      json:
+        name: caas_next_refid
+      type: object
+  securitySchemes:
+    caas_aspace_refid_auth:
+      flows:
+        implicit:
+          scopes:
+            'administer_system': The ability to act as a system administrator
