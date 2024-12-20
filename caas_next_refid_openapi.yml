@@ -49,7 +49,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CaasNextRefid'
-  /plugins/caas_next_refid/:resource_id:
     post:
       summary: Manually set next ref_id for provided resource
       parameters:
