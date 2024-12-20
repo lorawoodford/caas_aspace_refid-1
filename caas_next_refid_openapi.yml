@@ -4,14 +4,14 @@ info:
   version: '0.1'
 
 servers:
-  - url: http://aspace.si.edu:8089
-    description: Main (production) ArchivesSpace server
-  - url: http://aspacetest.si.edu:8089
-    description: Internal ArchivesSpace staging server for testing
   - url: http://localhost:4567
     description: Locally running development instance of ArchivesSpace
   - url: http://localhost:8089
     description: Locally running build of ArchivesSpace
+  - url: http://aspacetest.si.edu:8089
+    description: Internal ArchivesSpace staging server for testing
+  - url: http://aspace.si.edu:8089
+    description: Main (production) ArchivesSpace server
 
 paths:
   /plugins/caas_next_refid:
@@ -69,8 +69,7 @@ paths:
           schema:
             type: integer
       security:
-        - caas_aspace_refid_auth:
-            - 'administer_system'
+        - caas_aspace_refid_auth: []
       responses:
         "200": # status code
           description: A JSON response object
