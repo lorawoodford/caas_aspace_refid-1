@@ -17,10 +17,7 @@ jobs:
         with:
           ref: ${{ env.PROD_ARCHIVESSPACE_VERSION }}
           repository: Smithsonian/archivesspace
-      - name: Set up Ruby
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: 2.5
       - name: Run rubocop
         run: |
+          gem install rubocop
           rubocop -f g
