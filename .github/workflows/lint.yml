@@ -9,12 +9,18 @@ on:
 jobs:
   lint:
     runs-on: ubuntu-latest
+    env:
+      PROD_ARCHIVESSPACE_VERSION: v3.3.1
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout ArchivesSpace
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.PROD_ARCHIVESSPACE_VERSION }}
+          repository: Smithsonian/archivesspace
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: 2.5
       - name: Run rubocop
         run: |
-          bundle exec rubocop
+          rubocop -f g
