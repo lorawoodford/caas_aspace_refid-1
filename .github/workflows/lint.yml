@@ -17,7 +17,10 @@ jobs:
         with:
           ref: ${{ env.PROD_ARCHIVESSPACE_VERSION }}
           repository: Smithsonian/archivesspace
+      - uses: Smithsonian/caas-aspace-services/.github/actions/bootstrap@main
+        with:
+          backend: true
       - name: Run rubocop
         run: |
-          bundle config set with 'rubocop'
+          bundle install --with 'rubocop'
           bundle exec rubocop -f g
