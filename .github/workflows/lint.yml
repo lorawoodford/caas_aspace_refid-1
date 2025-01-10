@@ -19,5 +19,5 @@ jobs:
           repository: Smithsonian/archivesspace
       - name: Run rubocop
         run: |
-          gem install rubocop
-          rubocop -f g
+          bundle config set with 'rubocop'
+          bundle exec rubocop -f g
