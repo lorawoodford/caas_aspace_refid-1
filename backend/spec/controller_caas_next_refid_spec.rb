@@ -48,11 +48,11 @@ describe 'CAAS ref id plugin' do
         before do
           make_test_user('archivist')
         end
-  
+
         it 'denies access' do
           as_test_user('archivist') do
             post '/plugins/caas_next_refid', params = { resource_id: 1 }
-  
+
             expect(last_response).not_to be_ok
             expect(last_response.status).to eq(403)
             expect(last_response.body).to match(/Access denied/)
