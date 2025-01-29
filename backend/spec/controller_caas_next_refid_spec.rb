@@ -15,11 +15,33 @@ describe 'CAAS ref id plugin' do
     context 'when a resource_id is provided' do
       let(:resource) { create_resource }
 
-      it 'creates a next_refid' do
-        post '/plugins/caas_next_refid', params = { "resource_id" => resource.id}
+      context 'when no caas_next_refid exists' do
+        it 'creates a next_refid with a starting increment of 2' do
+          post '/plugins/caas_next_refid', params = { "resource_id" => resource.id}
 
-        expect(last_response).to be_ok
-        expect(last_response.status).to eq(200)
+          expect(last_response).to be_ok
+          expect(last_response.status).to eq(200)
+          expect(JSON(last_response.body)['next_refid']).to eq(2)
+        end
+      end
+
+      context 'when a caas_next_refid exists' do
+        let(:caas_next_refid) do
+          JSONModel(:caas_next_refid).from_hash({ resource_id: resource.id,
+                                                  next_refid: 40 })
+        end
+
+        before do
+          CaasAspaceRefid.create_from_json(caas_next_refid)
+        end
+
+        it 'updates the next_refid by 1' do
+          post '/plugins/caas_next_refid', params = { "resource_id" => resource.id}
+
+          expect(last_response).to be_ok
+          expect(last_response.status).to eq(200)
+          expect(JSON(last_response.body)['next_refid']).to eq(41)
+        end
       end
     end
   end
@@ -49,7 +71,7 @@ describe 'CAAS ref id plugin' do
 
         expect(last_response).to be_ok
         expect(last_response.status).to eq(200)
-        expect(last_response.body).to match(/"next_refid":1/)
+        expect(last_response.body).to match(/"next_refid":2/)
       end
 
 

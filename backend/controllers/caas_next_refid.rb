@@ -6,18 +6,19 @@ class ArchivesSpaceService < Sinatra::Base
     .permissions([])
     .returns([200, "{'resource_id', 'ID', 'next_refid', N}"]) \
   do
-    current_refid = CaasAspaceRefid.find(resource_id: params[:resource_id])
-    incremented_id = !current_refid.nil? ? current_refid.next_refid + 1 : 1
-    if !current_refid.nil?
-      new_refid_record = current_refid.update(next_refid: incremented_id)
-      json = CaasAspaceRefid.to_jsonmodel(new_refid_record.id)
-      handle_update(CaasAspaceRefid, current_refid.id, json)
+    existing_refid_record = CaasAspaceRefid.find(resource_id: params[:resource_id])
+    if existing_refid_record
+      incremented_refid = (existing_refid_record&.next_refid || 0) + 1
+      existing_refid_record.update(next_refid: incremented_refid)
+      json = CaasAspaceRefid.to_jsonmodel(existing_refid_record.id)
+      handle_update(CaasAspaceRefid, existing_refid_record.id, json)
     else
-      CaasAspaceRefid.create_from_json(JSONModel(:caas_next_refid).from_hash({:resource_id => params[:resource_id],
-                                                                              :next_refid => incremented_id }))
+      json = JSONModel(:caas_next_refid).from_hash({ :resource_id => params[:resource_id],
+                                                     :next_refid => 2 })
+      handle_create(CaasAspaceRefid, json)
     end
 
-    json_response(:resource_id => params[:resource_id], :next_refid => incremented_id)
+    json_response(CaasAspaceRefid.to_jsonmodel(CaasAspaceRefid.find(resource_id: params[:resource_id]).id))
   end
 
   Endpoint.get('/plugins/caas_next_refid/find_by_uri')
