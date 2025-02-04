@@ -25,12 +25,12 @@ The second migration `migrations/002_seed_initial_values.rb` will do the work of
 
 ```
 resource, next_ref_id
-<my resource number>, <my last used refid>
+<my resource number>, <my next refid>
 7572, 621
 43363, 10
 ```
 
-You can name this file whatever you would like, including the date is generally a good idea.  While it can be saved anywhere in the plugin directory, storing it in `migrations/csvs` will make it simpler to call the file when the migration is run.
+You can name this file whatever you would like, however including the date is generally a good idea.  While it can be saved anywhere in the plugin directory, storing it in `migrations/csvs` will make it simpler to call the file when the migration is run.
 
 To run the migration and seed this data:
 
@@ -78,7 +78,7 @@ If an error is encountered during a data-altering migration (e.g. seeding initia
 
 ## Updating Refids through the UI
 
-Should one or a small number of refids need to be regenerated in the UI, a "Regenerate Ref ID?" checkbox has been added to the archival object form.  This checkbox is currently only visible to system administrators.  When checked, the same logic that autogenerates refids on new records will be called on the save of an existing archival object record.  Since this logic concatenates a resource's EADID alongside a +1 of the refid stored in the `caas_aspace_refid` table for that resource, this manual process can be useful in the case where an EADID has changed and/or if an unexpected refid collision is anticipated.
+Should one or a small number of refids need to be regenerated in the UI, a "Regenerate Ref ID?" checkbox has been added to the archival object form.  This checkbox is currently only visible to system administrators.  When checked, the same logic that autogenerates refids on new records will be called on the save of an existing archival object record.  Since this logic concatenates a resource's EADID alongside the `next_refid` stored in the `caas_aspace_refid` table for that resource, this manual process can be useful in the case where an EADID has changed and/or if an unexpected refid collision is anticipated.
 
 ## Running Tests
 
